@@ -1,5 +1,9 @@
-import 'package:first_app/question.dart';
+import 'package:first_app/result.dart';
 import 'package:flutter/material.dart';
+
+import 'package:first_app/answer.dart';
+import 'package:first_app/question.dart';
+import './quiz.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,8 +20,23 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   var _questionIndex = 0;
+  final _questions = const [
+    {
+      'questionText': 'What\'s your favorite color?',
+      'answers': ['Black', 'Red', 'Green', 'White'],
+    },
+    {
+      'questionText': 'What\'s your favorite animal?',
+      'answers': ['Rabbit', 'Elephant', 'Snake', 'Lion'],
+    },
+    {
+      'questionText': 'Who\'s your favorite instructor?',
+      'answers': ['Anurag', 'Shashank', 'Sayali', 'Shivam'],
+    },
+  ];
 
   void _answerQuestion() {
+    // var aBool = true;
     setState(() {
       _questionIndex = _questionIndex + 1;
     });
@@ -25,34 +44,14 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    var questions = [
-      'What\'s your favorite color?',
-      'What\'s your favorite animal?'
-    ];
     return MaterialApp(
       home: Scaffold(
           appBar: AppBar(
             title: const Text("First App"),
           ),
-          body: Column(
-            children: [
-              Question(
-                questions[_questionIndex],
-              ),
-              ElevatedButton(
-                child: const Text('Answer 1'),
-                onPressed: _answerQuestion,
-              ),
-              ElevatedButton(
-                child: const Text('Answer 1'),
-                onPressed: _answerQuestion,
-              ),
-              ElevatedButton(
-                child: const Text('Answer 1'),
-                onPressed: _answerQuestion,
-              ),
-            ],
-          )),
+          body: _questionIndex < _questions.length
+              ? Quiz(_answerQuestion, _questionIndex, _questions)
+              : const Result()),
     );
   }
 }
