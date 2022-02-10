@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import './widgets/chart.dart';
 import './widgets/transaction_list.dart';
 import './models/transaction.dart';
 import './widgets/new_transaction.dart';
@@ -17,18 +18,18 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   final List<Transaction> _userTransactions = [
-    Transaction(
-      id: 't1',
-      title: 'New Shoes',
-      amount: 69.99,
-      date: DateTime.now(),
-    ),
-    Transaction(
-      id: 't2',
-      title: 'Weekly Groceries',
-      amount: 16.53,
-      date: DateTime.now(),
-    ),
+    // Transaction(
+    //   id: 't1',
+    //   title: 'New Shoes',
+    //   amount: 69.99,
+    //   date: DateTime.now(),
+    // ),
+    // Transaction(
+    //   id: 't2',
+    //   title: 'Weekly Groceries',
+    //   amount: 16.53,
+    //   date: DateTime.now(),
+    // ),
   ];
 
   void _addNewTransaction(String txTitle, double txAmount) {
@@ -56,17 +57,48 @@ class _MyAppState extends State<MyApp> {
     );
   }
 
+  List<Transaction> get _recentTransactions {
+    return _userTransactions.where((tx) {
+      return tx.date.isAfter(
+        DateTime.now().subtract(
+          const Duration(days: 7),
+        ),
+      );
+    }).toList();
+  }
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Expense Tracker',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.purple,
+        colorScheme: ColorScheme.fromSwatch().copyWith(
+          primary: Colors.purple,
+          secondary: Colors.amber,
+        ),
+        fontFamily: 'Quicksand',
+        textTheme: ThemeData.light().textTheme.copyWith(
+              headline6: const TextStyle(
+                fontFamily: 'OpenSans',
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+              ),
+            ),
+        appBarTheme: const AppBarTheme(
+          titleTextStyle: TextStyle(
+            fontFamily: 'OpenSans',
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
       home: Scaffold(
           appBar: AppBar(
-            title: const Text("Expense Tracker"),
+            title: const Text(
+              "Expense Tracker",
+            ),
             actions: [
               IconButton(
                 onPressed: () => _startAddNewTransaction(context),
@@ -78,14 +110,7 @@ class _MyAppState extends State<MyApp> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
-                const SizedBox(
-                  width: double.infinity,
-                  child: Card(
-                    child: Text('Chart'),
-                    elevation: 5,
-                    color: Colors.blue,
-                  ),
-                ),
+                Chart(_recentTransactions),
                 TransactionList(_userTransactions),
               ],
             ),
